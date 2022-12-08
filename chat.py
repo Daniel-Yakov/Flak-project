@@ -3,7 +3,7 @@ import datetime
 import mysql.connector
 
 massagesDB = mysql.connector.connect(
-  host='localhost',
+  host='flaskappdata',
   user="root",
   password="password",
   database="messagesDB",
@@ -72,4 +72,4 @@ def sendrequest(room):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0")
