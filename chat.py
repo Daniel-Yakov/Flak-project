@@ -41,7 +41,8 @@ def sendrequest(room):
     massageToSave = date + ' ' + request.form['username'] + ': ' + request.form['msg'] + '\n'
     # Save the massage to the file
     file.write(massageToSave)
-    return "success"
+    # redirect to room chat
+    return redirect(url_for('updateChat', room=room))
 
 
 
