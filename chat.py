@@ -42,7 +42,7 @@ def sendrequest(room):
     # Save the massage to the file
     file.write(massageToSave)
     # redirect to room chat
-    return redirect(url_for('updateChat', room=room))
+    return redirect(url_for('render_chat_room', room=room))
 
 
 
