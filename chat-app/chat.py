@@ -1,18 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 import mysql.connector
+import socket
 
 massagesDB = mysql.connector.connect(
-  host='flaskappdata',
+  host='db',
   user="root",
   password="password",
-  database="messagesDB",
   auth_plugin='mysql_native_password'
 )
 
 # Act as middlewares between app to mysql
 bufferedCursor = massagesDB.cursor(buffered=True)
 regularCursor = massagesDB.cursor()
+
+regularCursor.execute('CREATE DATABASE IF NOT EXISTS messagesDB')
+regularCursor.execute('use messagesDB')
+
 
 sql = bufferedCursor.execute
 
@@ -37,18 +41,19 @@ def render_chat_room(room):
         sql('select * from ' + room + ';')
     except:
         sql('create table ' + room + ' (massageId int NOT NULL AUTO_INCREMENT key, massageContent char(255));')
-    return render_template('index.html')
+    return render_template('index.html', host=socket.gethostname())
 
 # Handle the loading of the chat box
 @app.get("/api/chat/<room>")
 def updateChat(room):
     # Fetch all the chat's massages
     sqlquery = 'select massageContent from %s;' % room
-    regularCursor.execute(sqlquery)
+    bufferedCursor.execute(sqlquery)
+    massagesDB.commit()
     
     # Format the output nicly
     chatContent = ""
-    for line in regularCursor.fetchall():
+    for line in bufferedCursor.fetchall():
         chatContent += line[0]
     
     return chatContent
@@ -72,4 +77,4 @@ def sendrequest(room):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0')
