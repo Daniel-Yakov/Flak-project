@@ -7,15 +7,12 @@ massagesDB = mysql.connector.connect(
   host='db',
   user="root",
   password="password",
+  database='messagesDB',
   auth_plugin='mysql_native_password'
 )
 
 # Act as middlewares between app to mysql
 cursor = massagesDB.cursor(buffered=True)
-
-cursor.execute('CREATE DATABASE IF NOT EXISTS messagesDB')
-cursor.execute('use messagesDB')
-
 sql = cursor.execute
 
 app = Flask(__name__)
