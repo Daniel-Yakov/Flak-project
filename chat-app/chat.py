@@ -11,14 +11,12 @@ massagesDB = mysql.connector.connect(
 )
 
 # Act as middlewares between app to mysql
-bufferedCursor = massagesDB.cursor(buffered=True)
-regularCursor = massagesDB.cursor()
+cursor = massagesDB.cursor(buffered=True)
 
-regularCursor.execute('CREATE DATABASE IF NOT EXISTS messagesDB')
-regularCursor.execute('use messagesDB')
+cursor.execute('CREATE DATABASE IF NOT EXISTS messagesDB')
+cursor.execute('use messagesDB')
 
-
-sql = bufferedCursor.execute
+sql = cursor.execute
 
 app = Flask(__name__)
 
@@ -48,12 +46,12 @@ def render_chat_room(room):
 def updateChat(room):
     # Fetch all the chat's massages
     sqlquery = 'select massageContent from %s;' % room
-    bufferedCursor.execute(sqlquery)
+    sql(sqlquery)
     massagesDB.commit()
     
     # Format the output nicly
     chatContent = ""
-    for line in bufferedCursor.fetchall():
+    for line in cursor.fetchall():
         chatContent += line[0]
     
     return chatContent
