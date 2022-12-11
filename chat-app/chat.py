@@ -32,10 +32,7 @@ def render_index_room(room):
 # Load chat of specific room
 @app.get("/chat/<room>")
 def render_chat_room(room):
-    try:
-        sql('select * from ' + room + ';')
-    except:
-        sql('create table ' + room + ' (massageId int NOT NULL AUTO_INCREMENT key, massageContent char(255));')
+    sql('create table if not exists ' + room + ' (massageId int NOT NULL AUTO_INCREMENT key, massageContent char(255));')
     return render_template('index.html', host=socket.gethostname())
 
 # Handle the loading of the chat box
